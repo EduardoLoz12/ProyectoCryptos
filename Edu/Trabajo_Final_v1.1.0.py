@@ -6,6 +6,8 @@ import krakenex
 from pykrakenapi import KrakenAPI
 import time
 
+# hola Eduardo
+
 st.cache_data(persist='disk')
 api = krakenex.API()
 q=KrakenAPI(api)
