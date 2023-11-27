@@ -2,41 +2,38 @@ from datetime import date, datetime
 import streamlit as st
 import pandas as pd
 import mplfinance as mpf
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import krakenex
 from pykrakenapi import KrakenAPI
 import time
+import pandas_ta as ta
 
-# hola Eduardo
+#---------------Data---------------------------------------------
 
 st.cache_data(persist='disk')
 api = krakenex.API()
 q=KrakenAPI(api)
 
-def make_graph():
+def get_data():
     api = krakenex.API()
     k = KrakenAPI(api)
-    x = symbol
+    x = str(symbol)+'USDT'
     data1, last = k.get_ohlc_data(x,1440, since=unixtime)
-    crypto1 =data1.drop(['time','vwap','count'], axis=1)
-    crypto1.index.name = 'Date'
+    crypto1 =data1.drop(['vwap','count'], axis=1)
 
-    #Creando el indicador "oscilador estocastico"
+    crypto1['date'] = ''
+    crypto1['date'] = pd.to_datetime(crypto1['time'], dayfirst=True, unit='s')
+    crypto1['date'] = crypto1['date'].dt.strftime('%Y-%m-%d')
+    crypto1['month'] = pd.to_datetime(crypto1['time'], dayfirst=True, unit='s').dt.month
 
-    crypto1["Stocastic"]= (crypto1["close"]-crypto1["low"])*100/(crypto1["high"]-crypto1["low"])
-
-
-
-    #La funcion mpf necesita datos numericos para graficas. En esta parte logro ese objetivo
-
-    for i, col in crypto1.items():
-        crypto1[i] = pd.to_numeric(col, errors='coerce')
     return crypto1
 
+#-----Configuracion Streamlit------------------------------
 
 st.title('Graphic Machine')
 
-monedas = q.get_tradable_asset_pairs()
-monedas = monedas["altname"].unique()
+monedas = ['BTC', 'ETH', 'XRP', 'USDC', 'SOL', 'ADA', 'DOGE', 'TRX', 'LINK']
 
 c1, c2, c3 = st.columns([1, 1, 1])
 with c1:
@@ -74,19 +71,70 @@ with st.sidebar.form('settings_form'):
 
     st.form_submit_button('Apply')
 
-
-data = make_graph()
+#-------------------------------Calling Function-------------------------------
+data = get_data()
 print(data)
 
-mystyle = mpf.make_mpf_style(rc={'axes.labelsize': 'medium'})
-stocast = mpf.make_addplot(data["Stocastic"], panel=2, ylabel="Stocastic", color="brown", mav=(int(mav1),int(mav2),int(mav3)))
-fig, ax = mpf.plot(data, type="candle", volume=True, datetime_format="%B-%y",
-                   addplot=stocast, main_panel=1, volume_panel=0, xrotation=90, fontscale=0.8, figscale=0.8,
-                   style=chart_style, returnfig=True, show_nontrading=show_nontrading_days)
+# Add some indicators
+data.ta.stoch(high='high', low='low', k=14, d=3, append=True)
 
-fig.suptitle(f"Analazing {symbol} from {datefrom}")
-st.pyplot(fig)
+fig = go.Figure()
+fig = make_subplots(rows=2, cols=1)
+fig.add_trace(go.Candlestick(
+    x=data['date'],
+    open=data['open'],
+    high=data['high'],
+    low=data['low'],
+    close=data['close'],
+    name='Price'
+    )
+)
 
-if show_data:
-    st.markdown('---')
-    st.dataframe(data)
+epoch_timestamp = int(unixtime)
+datetime_obj = datetime.utcfromtimestamp(epoch_timestamp)
+fechaInicio = str(datetime_obj.year) + '-' + str(datetime_obj.month) + '-' + str(datetime_obj.day)
+
+# Adjust the date range as needed
+fig.update_xaxes(range=[fechaInicio, data.index.max()])
+
+# Adjust the date range as needed
+fig.update_yaxes(range=[str(datetime_obj) ,data['high'].max()+data['high'].min()])
+
+# Remove the range slider from the x-axis
+fig.update_xaxes(rangeslider_visible=False)
+
+fig.append_trace(
+    go.Scatter(
+        x=data.index,
+        y=data['STOCHk_14_3_3'],
+        line=dict(width=2),
+        name='fast',
+    ), row=2, col=1  #  <------------ lower chart %d
+)
+fig.append_trace(
+    go.Scatter(
+        x=data.index,
+        y=data['STOCHd_14_3_3'],
+        line=dict(width=2),
+        name='slow'
+    ), row=2, col=1 #  <------------ lower chart
+)
+
+# Extend our y-axis a bit
+fig.update_yaxes(range=[-10, 110], row=2, col=1)
+
+
+# Add overbought/oversold
+fig.add_hline(y=20, col=1, row=2, line_color='#336699', line_width=2, line_dash='dash') # type: ignore
+fig.add_hline(y=80, col=1, row=2, line_color='#336699', line_width=2, line_dash='dash') # type: ignore
+
+fig.update_layout(
+    title='Graficas Probando',
+    yaxis_title= 'Price',
+    width=800,  # Set the width to 800 pixels
+    height=600)
+
+st.plotly_chart(fig)
+st.subheader('Data')
+
+st.write(data)

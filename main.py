@@ -3,6 +3,8 @@ from pykrakenapi import KrakenAPI
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 st.title('Proyecto')
@@ -17,8 +19,7 @@ options = st.selectbox(
 st.divider()
 st.subheader('Grafica')
 
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+
 
 api = krakenex.API()
 k = KrakenAPI(api)
@@ -31,7 +32,7 @@ ohlc['epoch_time'] = pd.to_datetime(ohlc['time'], dayfirst=True, unit='s')
 ohlc['epoch_time']= ohlc['epoch_time'].dt.strftime('%Y-%m-%d')
 ohlc['month']= pd.to_datetime(ohlc['time'], dayfirst=True, unit='s').dt.month
 
-
+print(ohlc.head(5))
 import pandas_ta as ta
 # Add some indicators
 ohlc.ta.stoch(high='high', low='low', k=14, d=3, append=True)
