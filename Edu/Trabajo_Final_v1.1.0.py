@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 import krakenex
 from pykrakenapi import KrakenAPI
 import time
+import pandas_ta as ta
 
 
 #---------------Data---------------------------------------------
