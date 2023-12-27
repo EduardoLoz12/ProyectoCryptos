@@ -13,7 +13,7 @@ import pandas_ta as ta
 
 st.cache_data(persist='disk')
 api = krakenex.API()
-q=KrakenAPI(api)
+q = KrakenAPI(api)
 
 def get_data():
     api = krakenex.API()
