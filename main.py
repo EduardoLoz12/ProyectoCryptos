@@ -63,7 +63,6 @@ with st.sidebar.form('Movin Average Selector'):
 
 #-------------------------------Calling Function-------------------------------
 data = get_data()
-print(data)
 
 # Add some indicators
 data.ta.stoch(high='high', low='low', k=14, d=3, append=True)
