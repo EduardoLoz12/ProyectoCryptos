@@ -59,6 +59,7 @@ https://repo.anaconda.com/pkgs/main/noarch/python-tzdata-2023.3-pyhd3eb1b0_0.con
 https://repo.anaconda.com/pkgs/main/win-64/pytz-2023.3.post1-py311haa95532_0.conda
 https://repo.anaconda.com/pkgs/main/win-64/setuptools-68.2.2-py311haa95532_0.conda
 https://repo.anaconda.com/pkgs/main/noarch/six-1.16.0-pyhd3eb1b0_1.conda
+https://repo.anaconda.com/pkgs/main/win-64/tenacity-8.2.2-py311haa95532_0.conda
 https://repo.anaconda.com/pkgs/main/win-64/tornado-6.3.3-py311h2bbff1b_0.conda
 https://repo.anaconda.com/pkgs/main/win-64/traitlets-5.7.1-py311haa95532_0.conda
 https://repo.anaconda.com/pkgs/main/win-64/wheel-0.41.2-py311haa95532_0.conda
@@ -71,6 +72,7 @@ https://repo.anaconda.com/pkgs/main/win-64/matplotlib-inline-0.1.6-py311haa95532
 https://repo.anaconda.com/pkgs/main/win-64/numpy-base-1.26.2-py311hd01c5d8_0.conda
 https://repo.anaconda.com/pkgs/main/win-64/openjpeg-2.4.0-h4fc8c34_0.conda
 https://repo.anaconda.com/pkgs/main/win-64/pip-23.3.1-py311haa95532_0.conda
+https://repo.anaconda.com/pkgs/main/win-64/plotly-5.9.0-py311haa95532_0.conda
 https://repo.anaconda.com/pkgs/main/win-64/pysocks-1.7.1-py311haa95532_0.conda
 https://repo.anaconda.com/pkgs/main/noarch/python-dateutil-2.8.2-pyhd3eb1b0_0.conda
 https://repo.anaconda.com/pkgs/main/win-64/qt-main-5.15.2-h19c9488_10.conda
